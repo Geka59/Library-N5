@@ -12,10 +12,10 @@ class UserInterface:
     def __init__(self):
         # init
         app = QtWidgets.QApplication([])
-        welcome_window = uic.loadUi("WelcomeWindow.ui")
+        welcome_window = uic.loadUi("assets\WelcomeWindow.ui")
         welcome_window.setWindowTitle("Вход")
-        aui: object = uic.loadUi("AdminWindow.ui")
-        ui = uic.loadUi("WindowMain.ui")
+        aui: object = uic.loadUi("assets\AdminWindow.ui")
+        ui = uic.loadUi("assets\WindowMain.ui")
         ui.setWindowTitle("Library № 5")  # Начальные настройки фронта
         aui.pushButton_2.hide()
         aui.comboBox.addItems(['1', '2', '3'])
@@ -65,7 +65,7 @@ class UserInterface:
         self.welcome_window.close()
         self.aui.show()
 
-    def index_changed(self):  # Вывод только необходимых строчек по количество авторов
+    def index_changed(self):  # Вывод только необходимых строчек по количество авторов при добавлении
         count = int(self.aui.comboBox.currentText())
         print(f"index_changed {count}")
         if count == 1:
@@ -112,6 +112,7 @@ class UserInterface:
         elif result==3:
             self.text_field('Такого автора нет ')
             self.visible_butt(1)
+
     def add_data(self):
         print(f"add_data")
         self.visible_butt(0)

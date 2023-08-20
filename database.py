@@ -21,7 +21,7 @@ class Database():
         print(self.cursor.fetchall())
 
     def print_in_giu(self, id):
-        """Выборка данных из таблиц для вывода"""
+        """Выборка данных из таблиц для вывода по id"""
         if id is None:
             self.cursor.execute("SELECT id FROM library5")
             selection = self.cursor.fetchall()
@@ -112,9 +112,7 @@ class Database():
     # #def adding_writer(self,author1, author2, author3, count_authors):  # Отправки запроса на кнопку добавления автора
     #   #  wr_data_a = [None, author1]
     #     cursor.execute("INSERT INTO authors VALUES(?,?)", wr_data_a)
-    #     dbLib.commit()
-    #     # adding_book(book_name, autor_on_write, book_descript)
-    #     return None
+    #     dbLib.commit
     def deletingt(self, id_book):
         list_for_check = []
         self.cursor.execute("SELECT id FROM library5")
@@ -152,10 +150,3 @@ class Database():
 
 # обработка исключенй питон exeption try catch + допил интерфейса с одним окном и разными правами + удаление записей на админке.
 # p.test git
-
-# with sqlite3.connect("test_autors") as dbLib:  # подключение БД библиоткеи
-#   cursor: Cursor = dbLib.cursor()
-
-
-# if __name__ == '__main__':
-# main()
