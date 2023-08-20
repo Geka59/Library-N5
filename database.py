@@ -42,7 +42,8 @@ class Database():
             self.cursor.execute("SELECT id FROM library5")
             selection = self.cursor.fetchall()
         else:
-            self.check_id_in_base(id)
+            if (self.check_id_in_base(id))==False:
+                return []
             selection = id
         list_out = [''] * len(selection)  # спиоск собирающийся на вывод
         k: int
