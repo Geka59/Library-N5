@@ -20,12 +20,29 @@ class Database():
         self.cursor.execute("SELECT * FROM library5")
         print(self.cursor.fetchall())
 
+    def check_id_in_base(self,data_check):
+        """Проверка существовяния всех id списка data_check в базе"""
+        id_for_check=data_check
+        if len(id_for_check)==0:
+            return True
+        self.cursor.execute("SELECT id FROM library5")
+        all_id=self.cursor.fetchall()
+        lice = [all_id[i][0] for i in range(0, len(all_id))]
+        for i in range(0,len(id_for_check)):
+            if((id_for_check)[i][0] not in lice):
+                return False
+        return True
+
+
+
+
     def print_in_giu(self, id):
-        """Выборка данных из таблиц для вывода по id"""
+        """Выборка данных из таблиц для вывода"""
         if id is None:
             self.cursor.execute("SELECT id FROM library5")
             selection = self.cursor.fetchall()
         else:
+            self.check_id_in_base(id)
             selection = id
         list_out = [''] * len(selection)  # спиоск собирающийся на вывод
         k: int
