@@ -33,7 +33,10 @@ class Database():
                 return False
         return True
 
-
+    def login_user(self,user_name,password):
+        self.cursor.execute("SELECT * FROM users WHERE login = ?", [user_name])
+        user_data=self.cursor.fetchall()
+        return user_data
 
 
     def print_in_giu(self, id):

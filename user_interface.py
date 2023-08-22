@@ -49,10 +49,30 @@ class UserInterface:
                 self.aui.tableWidget.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
         self.aui.tableWidget.resizeColumnsToContents()
 
-    def enterance(self):
+    def login_user(self):
+        """"сбор данных логина из GUI для отпрваки на проверку"""
+        answer=[]
+        user_name = str(self.welcome_window.lineEdit.text())
+        password = self.welcome_window.lineEdit_2.text()
+        if (len(user_name)>0) and (len(password)>0):
+            bd=Database()
+            answer=bd.login_user(user_name,password)
+            if answer==[]:
+                self.welcome_window.label.setText('Такого пользователя нет')
+                return
+        if(answer[0][2])==password:
+            if answer[0][5]==1:
+                self.admin_enterance()
+            else:
+                self.enterance(answer[0][3])
+        else:
+            self.welcome_window.label.setText('Пароль неверный')
+
+
+    def enterance(self,name):# сюда передовать имя и тд
         print(f"enterance")
         user_name=self.welcome_window.lineEdit.text()
-        self.ui.label_6.setText(user_name)
+        self.ui.label_6.setText(name)
         self.welcome_window.close()
         bd=Database()
         self.out_table(bd.print_in_giu(None))
@@ -156,6 +176,7 @@ class UserInterface:
         self.aui.pushButton_3.clicked.connect(self.sample_deleting)
         self.ui.pushButton.clicked.connect(self.log_out)
         self.welcome_window.pushButton.clicked.connect(self.enterance)
+        self.welcome_window.pushButton_3.clicked.connect(self.login_user)
         self.welcome_window.pushButton_2.clicked.connect(self.admin_enterance)
         self.welcome_window.show()
         print("UI app exec")
