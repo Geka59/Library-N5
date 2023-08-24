@@ -40,6 +40,8 @@ class UserInterface:
             for y in range(len(rows[x])):
                 self.ui.tableWidget.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
         self.ui.tableWidget.resizeColumnsToContents()
+        self.ui.tableWidget.resizeRowsToContents()
+
         """вывод в окно админа"""
         self.aui.tableWidget.setRowCount(len(rows))
         self.aui.tableWidget.setColumnCount(4)
@@ -175,7 +177,7 @@ class UserInterface:
         self.aui.pushButton_2.clicked.connect(self.add_data)
         self.aui.pushButton_3.clicked.connect(self.sample_deleting)
         self.ui.pushButton.clicked.connect(self.log_out)
-        self.welcome_window.pushButton.clicked.connect(self.enterance)
+        self.welcome_window.pushButton.clicked.connect(lambda :self.enterance("Тестировщик"))
         self.welcome_window.pushButton_3.clicked.connect(self.login_user)
         self.welcome_window.pushButton_2.clicked.connect(self.admin_enterance)
         self.welcome_window.show()
