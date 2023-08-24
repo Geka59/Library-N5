@@ -51,7 +51,7 @@ class Database():
         list_out = [''] * len(selection)  # спиоск собирающийся на вывод
         k: int
         for k in range(len(selection)):
-            list_out[k] = [''] * 4
+            list_out[k] = [''] * 5
         bounty = 0
         for ik in selection:
             i = ik[0]
@@ -69,6 +69,8 @@ class Database():
                 var3 = var3 + str(var2[h][0]) + "\n"
             list_out[bounty][2] = var3
             list_out[bounty][3] = str(var1[0][2])
+            if (str(var1[0][3]))!='None':
+                list_out[bounty][4] = 'Занято'
             bounty += 1
         vivod = list_out
 
@@ -77,6 +79,11 @@ class Database():
         # "LEFT OUTER JOIN autorsBook WHERE autorsBook.id == (Library5.id_author)")
 
         return vivod
+
+    def book_on_id_user(self, id_user):
+        """Возвращает ввсе id книг которые читаются пользователем с id"""
+        self.cursor.execute("SELECT id from library5 WHERE reader=?",[id_user])
+        return self.cursor.fetchall()
 
     def check_adding(self, book_name: str, book_descript: str, writer_book1: str, writer_book2: str, writer_book3: str,
                      count_authors: int):

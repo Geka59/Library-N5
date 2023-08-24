@@ -34,8 +34,8 @@ class UserInterface:
     def out_table(self, rows):  # Функция вывода датнных в таблицу пользовательского интерфейса
         print(f"out_table")
         self.ui.tableWidget.setRowCount(len(rows))
-        self.ui.tableWidget.setColumnCount(4)
-        self.ui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание'])
+        self.ui.tableWidget.setColumnCount(5)
+        self.ui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание','Занято'])
         for x in range(0, len(rows)):
             for y in range(len(rows[x])):
                 self.ui.tableWidget.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
@@ -44,40 +44,55 @@ class UserInterface:
 
         """вывод в окно админа"""
         self.aui.tableWidget.setRowCount(len(rows))
-        self.aui.tableWidget.setColumnCount(4)
-        self.aui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание'])
+        self.aui.tableWidget.setColumnCount(5)
+        self.aui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание','Читатель'])
         for x in range(0, len(rows)):
             for y in range(len(rows[x])):
                 self.aui.tableWidget.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
         self.aui.tableWidget.resizeColumnsToContents()
 
+    def out_table_my_books(self,rows):
+        """вывод в окно моих книг"""
+        self.ui.tableWidget_2.setRowCount(len(rows))
+        self.ui.tableWidget_2.setColumnCount(4)
+        self.ui.tableWidget_2.setHorizontalHeaderLabels(
+            ['id книги', 'Название', 'Автор', 'Краткое описание'])
+        for x in range(0, len(rows)):
+            for y in range(len(rows[x])):
+                self.ui.tableWidget_2.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
+        self.ui.tableWidget_2.resizeColumnsToContents()
+
     def login_user(self):
-        """"сбор данных логина из GUI для отпрваки на проверку"""
+        """"сбор данных логина из GUI и проверка с перадресацией на вход"""
         answer=[]
         user_name = str(self.welcome_window.lineEdit.text())
         password = self.welcome_window.lineEdit_2.text()
         if (len(user_name)>0) and (len(password)>0):
             bd=Database()
-            answer=bd.login_user(user_name,password)
+            answer=bd.login_user(user_name,password) # возвращает все из бд
             if answer==[]:
                 self.welcome_window.label.setText('Такого пользователя нет')
                 return
+        else:
+            return
         if(answer[0][2])==password:
             if answer[0][5]==1:
                 self.admin_enterance()
             else:
-                self.enterance(answer[0][3])
+                self.enterance(answer[0][3],answer[0][0])
         else:
             self.welcome_window.label.setText('Пароль неверный')
 
 
-    def enterance(self,name):# сюда передовать имя и тд
+    def enterance(self,name,id_reader):# сюда передовать имя и тд
         print(f"enterance")
         user_name=self.welcome_window.lineEdit.text()
         self.ui.label_6.setText(name)
         self.welcome_window.close()
         bd=Database()
         self.out_table(bd.print_in_giu(None))
+        my_books=(bd.print_in_giu(bd.book_on_id_user(id_reader)))
+        self.out_table_my_books(my_books)
         self.ui.show()
 
     def admin_enterance(self):
@@ -177,7 +192,7 @@ class UserInterface:
         self.aui.pushButton_2.clicked.connect(self.add_data)
         self.aui.pushButton_3.clicked.connect(self.sample_deleting)
         self.ui.pushButton.clicked.connect(self.log_out)
-        self.welcome_window.pushButton.clicked.connect(lambda :self.enterance("Тестировщик"))
+        self.welcome_window.pushButton.clicked.connect(lambda :self.enterance("Тестировщик",1))
         self.welcome_window.pushButton_3.clicked.connect(self.login_user)
         self.welcome_window.pushButton_2.clicked.connect(self.admin_enterance)
         self.welcome_window.show()
