@@ -35,7 +35,7 @@ class UserInterface:
         print(f"out_table")
         self.ui.tableWidget.setRowCount(len(rows))
         self.ui.tableWidget.setColumnCount(5)
-        self.ui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание','Занято'])
+        self.ui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание','Выдано'])
         for x in range(0, len(rows)):
             for y in range(len(rows[x])):
                 self.ui.tableWidget.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
@@ -90,15 +90,15 @@ class UserInterface:
         self.ui.label_6.setText(name)
         self.welcome_window.close()
         bd=Database()
-        self.out_table(bd.print_in_giu(None))
-        my_books=(bd.print_in_giu(bd.book_on_id_user(id_reader)))
+        self.out_table(bd.print_in_giu(None,0))
+        my_books=(bd.print_in_giu(bd.book_on_id_user(id_reader),0))
         self.out_table_my_books(my_books)
         self.ui.show()
 
     def admin_enterance(self):
         print(f"admin_enterance")
         bd = Database()
-        self.out_table(bd.print_in_giu(None))
+        self.out_table(bd.print_in_giu(None,1))
         self.welcome_window.close()
         self.aui.show()
 
@@ -133,7 +133,7 @@ class UserInterface:
                             (str(self.aui.lineEdit_3.text())), (str(self.aui.lineEdit.text())),
                             (str(self.aui.lineEdit_2.text())), (str(self.aui.lineEdit_4.text())),
                             (str(self.aui.lineEdit_5.text())), int(self.aui.comboBox.currentText()))
-        self.out_table(bd.print_in_giu(None))
+        self.out_table(bd.print_in_giu(None,1))
 
         self.info(result)# Ловим result и отправляем его в другую функцию, которая выводит на экран
 
@@ -164,7 +164,7 @@ class UserInterface:
         search_bool = int(self.ui.comboBox.currentIndex())
         bd=Database()
         kpk=bd.search_fetchall(search_text,search_bool)
-        self.out_table(bd.print_in_giu(kpk))
+        self.out_table(bd.print_in_giu(kpk),0)
 
 
     def log_out(self):
@@ -178,7 +178,7 @@ class UserInterface:
             print(texti)
             bd=Database()
             bd.deletingt(texti)
-            self.out_table(bd.print_in_giu(None))
+            self.out_table(bd.print_in_giu(None,1))
         except AttributeError:
             print('мы в ошибке')
 

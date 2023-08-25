@@ -39,7 +39,7 @@ class Database():
         return user_data
 
 
-    def print_in_giu(self, id):
+    def print_in_giu(self, id, id_swich):
         """Выборка данных из таблиц для вывода"""
         if id is None:
             self.cursor.execute("SELECT id FROM library5")
@@ -70,7 +70,10 @@ class Database():
             list_out[bounty][2] = var3
             list_out[bounty][3] = str(var1[0][2])
             if (str(var1[0][3]))!='None':
-                list_out[bounty][4] = 'Занято'
+                if id_swich==1:
+                    list_out[bounty][4] = str(var1[0][3])
+                else:
+                    list_out[bounty][4] = 'Выдано'
             bounty += 1
         vivod = list_out
 
@@ -102,10 +105,9 @@ class Database():
 
         if count_authors == 1:
             if aut1 is not None:
-                try:
-                    self.adding_book(book_name, book_descript, aut1, aut2, aut3, count_authors)
-                except Exception:
-                    print(',lz')
+
+                self.adding_book(book_name, book_descript, aut1, aut2, aut3, count_authors)
+
             else:
                 return 3
         elif count_authors == 2:
@@ -122,10 +124,10 @@ class Database():
         return 0
 
     def adding_book(self, wbook_name, wbook_descript, author1_id, author2_id, author3_id, count_authors):
-        wr_data = [None, wbook_name, wbook_descript]
+        wr_data = [None, wbook_name, wbook_descript, None]
         # raise CustomException
         # print('dffnfj')
-        self.cursor.execute("INSERT INTO library5 VALUES(?,?,?)", wr_data)
+        self.cursor.execute("INSERT INTO library5 VALUES(?,?,?,?)", wr_data)
         self.dbLib.commit()
         self.cursor.execute("SELECT id FROM library5 WHERE name=?", [wbook_name])
         book_id = self.cursor.fetchone()[0]
