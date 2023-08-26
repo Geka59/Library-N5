@@ -40,7 +40,7 @@ class Database():
 
 
     def print_in_giu(self, id, id_swich):
-        """Выборка данных из таблиц для вывода"""
+        """Выборка данных из таблиц library5 и authors для вывода"""
         if id is None:
             self.cursor.execute("SELECT id FROM library5")
             selection = self.cursor.fetchall()
@@ -51,7 +51,7 @@ class Database():
         list_out = [''] * len(selection)  # спиоск собирающийся на вывод
         k: int
         for k in range(len(selection)):
-            list_out[k] = [''] * 5
+            list_out[k] = [''] * 7
         bounty = 0
         for ik in selection:
             i = ik[0]
@@ -69,11 +69,19 @@ class Database():
                 var3 = var3 + str(var2[h][0]) + "\n"
             list_out[bounty][2] = var3
             list_out[bounty][3] = str(var1[0][2])
+
             if (str(var1[0][3]))!='None':
+                list_out[bounty][5] = str(var1[0][5])
                 if id_swich==1:
-                    list_out[bounty][4] = str(var1[0][3])
+                    name=self.ret_user_name_on_id(str(var1[0][3]))
+                    list_out[bounty][4] = name
+                    list_out[bounty][5] = str(var1[0][4])
+                    list_out[bounty][6] = str(var1[0][5])
                 else:
                     list_out[bounty][4] = 'Выдано'
+                if id_swich==2:
+                    list_out[bounty][4] = str(var1[0][4])
+
             bounty += 1
         vivod = list_out
 
@@ -82,6 +90,18 @@ class Database():
         # "LEFT OUTER JOIN autorsBook WHERE autorsBook.id == (Library5.id_author)")
 
         return vivod
+
+    def ret_user_name_on_id(self,id):
+         self.cursor.execute("SELECT name,surname from users WHERE id=?", [id])
+         user_data=self.cursor.fetchall()
+         reverse_user_data= user_data[0][0]+' '+user_data[0][1]
+         return reverse_user_data
+
+    def users_on_name(self,name,surname):
+        search_in_table = '%' + name + '%'
+        search_in_sur = '%' + surname + '%'
+        self.cursor.execute("SELECT * FROM users WHERE name LIKE ? AND surname LIKE ?", [search_in_table,search_in_sur])
+        return (self.cursor.fetchall())
 
     def book_on_id_user(self, id_user):
         """Возвращает ввсе id книг которые читаются пользователем с id"""

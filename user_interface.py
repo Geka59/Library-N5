@@ -1,7 +1,7 @@
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets, uic,QtGui
 from PyQt5.QtWidgets import QTableWidgetItem
 from database import Database
-
+from datetime import datetime
 
 class UserInterface:
     app = None
@@ -35,32 +35,54 @@ class UserInterface:
         print(f"out_table")
         self.ui.tableWidget.setRowCount(len(rows))
         self.ui.tableWidget.setColumnCount(5)
-        self.ui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание','Выдано'])
+        self.ui.tableWidget.setSortingEnabled(False)
+        self.ui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание', 'Выдано'])
         for x in range(0, len(rows)):
             for y in range(len(rows[x])):
                 self.ui.tableWidget.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
         self.ui.tableWidget.resizeColumnsToContents()
         self.ui.tableWidget.resizeRowsToContents()
+        self.ui.tableWidget.setSortingEnabled(True)
 
         """вывод в окно админа"""
         self.aui.tableWidget.setRowCount(len(rows))
-        self.aui.tableWidget.setColumnCount(5)
-        self.aui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание','Читатель'])
+        self.aui.tableWidget.setColumnCount(7)
+        self.aui.tableWidget.setHorizontalHeaderLabels(['id книги', 'Название', 'Автор', 'Краткое описание','Читатель','Дата выдачи','Дата возврата'])
         for x in range(0, len(rows)):
             for y in range(len(rows[x])):
                 self.aui.tableWidget.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
+                if y==6 and str(rows[x][y])!=''and self.data_revision(str(rows[x][y])):
+                    self.setColortoRow(x)
         self.aui.tableWidget.resizeColumnsToContents()
 
     def out_table_my_books(self,rows):
         """вывод в окно моих книг"""
         self.ui.tableWidget_2.setRowCount(len(rows))
-        self.ui.tableWidget_2.setColumnCount(4)
+        self.ui.tableWidget_2.setColumnCount(6)
         self.ui.tableWidget_2.setHorizontalHeaderLabels(
-            ['id книги', 'Название', 'Автор', 'Краткое описание'])
+            ['id книги', 'Название', 'Автор', 'Краткое описание','дата выдачи','дата возврата'])
         for x in range(0, len(rows)):
             for y in range(len(rows[x])):
                 self.ui.tableWidget_2.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
+                if y==5 and self.data_revision(str(rows[x][y])):
+                    self.setColortoRow(x)
         self.ui.tableWidget_2.resizeColumnsToContents()
+
+
+
+
+    def data_revision(self,date_for_revision):
+        current_date = datetime.now().date()
+        current_date_string = current_date.strftime('%d.%m.%Y')
+        a = (datetime.strptime(date_for_revision, '%d.%m.%Y')).date()
+        if(current_date>a):
+            return True
+
+    def setColortoRow(self, rowIndex):
+        for j in range(self.ui.tableWidget_2.columnCount()):
+            self.ui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(204,255,0))
+        for j in range(self.aui.tableWidget.columnCount()):
+            self.aui.tableWidget.item(rowIndex, j).setBackground(QtGui.QColor(204,255,0))
 
     def login_user(self):
         """"сбор данных логина из GUI и проверка с перадресацией на вход"""
@@ -83,6 +105,14 @@ class UserInterface:
         else:
             self.welcome_window.label.setText('Пароль неверный')
 
+    def search_id(self):
+        firs_name=self.aui.lineEdit_11.text()
+        second_name=self.aui.lineEdit_12.text()
+        bd=Database()
+        users_looking_as_desc=bd.users_on_name(firs_name,second_name)
+        if(len(users_looking_as_desc)==1):
+            self.aui.lineEdit_13.setText(str(users_looking_as_desc[0][0]))
+
 
     def enterance(self,name,id_reader):# сюда передовать имя и тд
         print(f"enterance")
@@ -91,7 +121,7 @@ class UserInterface:
         self.welcome_window.close()
         bd=Database()
         self.out_table(bd.print_in_giu(None,0))
-        my_books=(bd.print_in_giu(bd.book_on_id_user(id_reader),0))
+        my_books=(bd.print_in_giu(bd.book_on_id_user(id_reader),2))
         self.out_table_my_books(my_books)
         self.ui.show()
 
@@ -149,7 +179,8 @@ class UserInterface:
         elif result==3:
             self.text_field('Такого автора нет ')
             self.visible_butt(1)
-
+    def datatime_parser(self,data):
+        pass
     def add_data(self):
         print(f"add_data")
         self.visible_butt(0)
@@ -164,7 +195,7 @@ class UserInterface:
         search_bool = int(self.ui.comboBox.currentIndex())
         bd=Database()
         kpk=bd.search_fetchall(search_text,search_bool)
-        self.out_table(bd.print_in_giu(kpk),0)
+        self.out_table(bd.print_in_giu(kpk,0))
 
 
     def log_out(self):
@@ -188,11 +219,13 @@ class UserInterface:
         print("UI preparing")
         self.aui.comboBox.currentIndexChanged.connect(self.index_changed)
         self.ui.lineEdit.textChanged.connect(self.search)
+        self.aui.lineEdit_11.textChanged.connect(self.search_id)
+        self.aui.lineEdit_12.textChanged.connect(self.search_id)
         self.aui.pushButton.clicked.connect(self.check_data)
         self.aui.pushButton_2.clicked.connect(self.add_data)
         self.aui.pushButton_3.clicked.connect(self.sample_deleting)
         self.ui.pushButton.clicked.connect(self.log_out)
-        self.welcome_window.pushButton.clicked.connect(lambda :self.enterance("Тестировщик",1))
+        self.welcome_window.pushButton.clicked.connect(lambda :self.enterance("Тестировщик_читатель",4))
         self.welcome_window.pushButton_3.clicked.connect(self.login_user)
         self.welcome_window.pushButton_2.clicked.connect(self.admin_enterance)
         self.welcome_window.show()

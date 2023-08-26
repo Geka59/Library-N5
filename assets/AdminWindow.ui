@@ -224,11 +224,17 @@
           <height>22</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <family>BrokenLed</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
         <property name="styleSheet">
          <string notr="true"/>
         </property>
         <property name="inputMask">
-         <string>&gt;A.A. A&lt;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</string>
+         <string/>
         </property>
         <property name="readOnly">
          <bool>false</bool>
@@ -284,11 +290,45 @@
           <height>22</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <family>BrokenLed</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
         <property name="styleSheet">
          <string notr="true"/>
         </property>
         <property name="inputMask">
-         <string>&gt;A.A. A&lt;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</string>
+         <string/>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+        <property name="placeholderText">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_13">
+        <property name="geometry">
+         <rect>
+          <x>1080</x>
+          <y>20</y>
+          <width>91</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>BrokenLed</family>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="inputMask">
+         <string/>
         </property>
         <property name="readOnly">
          <bool>false</bool>
