@@ -20,6 +20,7 @@ class UserInterface:
         aui.pushButton_2.hide()
         aui.comboBox.addItems(['1', '2', '3'])
         ui.comboBox.addItems(['Авторы', 'Книги'])
+        aui.comboBox_3.addItems(['Авторы', 'Название'])
 
         aui.lineEdit_4.hide()
         aui.lineEdit_5.hide()
@@ -106,6 +107,7 @@ class UserInterface:
             self.welcome_window.label.setText('Пароль неверный')
 
     def search_id(self):
+        """Метод посика номера читателя по входным данным"""
         firs_name=self.aui.lineEdit_11.text()
         second_name=self.aui.lineEdit_12.text()
         bd=Database()
@@ -179,8 +181,7 @@ class UserInterface:
         elif result==3:
             self.text_field('Такого автора нет ')
             self.visible_butt(1)
-    def datatime_parser(self,data):
-        pass
+
     def add_data(self):
         print(f"add_data")
         self.visible_butt(0)
@@ -196,6 +197,13 @@ class UserInterface:
         bd=Database()
         kpk=bd.search_fetchall(search_text,search_bool)
         self.out_table(bd.print_in_giu(kpk,0))
+
+    def admin_search(self):
+        search_text=str(self.aui.lineEdit_14.text())
+        search_bool = int(self.aui.comboBox_3.currentIndex())
+        bd=Database()
+        kpk=bd.search_fetchall(search_text,search_bool)
+        self.out_table(bd.print_in_giu(kpk,1))
 
 
     def log_out(self):
@@ -219,6 +227,7 @@ class UserInterface:
         print("UI preparing")
         self.aui.comboBox.currentIndexChanged.connect(self.index_changed)
         self.ui.lineEdit.textChanged.connect(self.search)
+        self.aui.lineEdit_14.textChanged.connect(self.admin_search)
         self.aui.lineEdit_11.textChanged.connect(self.search_id)
         self.aui.lineEdit_12.textChanged.connect(self.search_id)
         self.aui.pushButton.clicked.connect(self.check_data)
