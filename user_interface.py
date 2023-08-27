@@ -53,7 +53,7 @@ class UserInterface:
             for y in range(len(rows[x])):
                 self.aui.tableWidget.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
                 if y==6 and str(rows[x][y])!=''and self.data_revision(str(rows[x][y])):
-                    self.setColortoRow(x)
+                    self.setColortoRow(x,1)
         self.aui.tableWidget.resizeColumnsToContents()
 
     def out_table_my_books(self,rows):
@@ -66,7 +66,7 @@ class UserInterface:
             for y in range(len(rows[x])):
                 self.ui.tableWidget_2.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
                 if y==5 and self.data_revision(str(rows[x][y])):
-                    self.setColortoRow(x)
+                    self.setColortoRow(x,0)
         self.ui.tableWidget_2.resizeColumnsToContents()
 
 
@@ -79,11 +79,13 @@ class UserInterface:
         if(current_date>a):
             return True
 
-    def setColortoRow(self, rowIndex):
-        for j in range(self.ui.tableWidget_2.columnCount()):
-            self.ui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(204,255,0))
-        for j in range(self.aui.tableWidget.columnCount()):
-            self.aui.tableWidget.item(rowIndex, j).setBackground(QtGui.QColor(204,255,0))
+    def setColortoRow(self, rowIndex,flag):
+        if flag==0:
+            for j in range(self.ui.tableWidget_2.columnCount()):
+                self.ui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(204,255,0))
+        else:
+            for j in range(self.aui.tableWidget.columnCount()):
+               self.aui.tableWidget.item(rowIndex, j).setBackground(QtGui.QColor(204,255,0))
 
     def login_user(self):
         """"сбор данных логина из GUI и проверка с перадресацией на вход"""
