@@ -91,6 +91,10 @@ class Database():
 
         return vivod
 
+    def giving_book(self,id_user,id_book,date_now,date_ret):
+        self.cursor.execute("UPDATE library5 SET reader=?, date_given_out=?, date_return=? WHERE id=?",[id_user,date_now,date_ret,id_book])
+        self.dbLib.commit()
+
     def ret_user_name_on_id(self,id):
          self.cursor.execute("SELECT name,surname from users WHERE id=?", [id])
          user_data=self.cursor.fetchall()

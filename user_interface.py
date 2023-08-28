@@ -75,6 +75,7 @@ class UserInterface:
     def data_revision(self,date_for_revision):
         current_date = datetime.now().date()
         current_date_string = current_date.strftime('%d.%m.%Y')
+        print(current_date_string)
         a = (datetime.strptime(date_for_revision, '%d.%m.%Y')).date()
         if(current_date>a):
             return True
@@ -200,6 +201,16 @@ class UserInterface:
         kpk=bd.search_fetchall(search_text,search_bool)
         self.out_table(bd.print_in_giu(kpk,0))
 
+
+    def given_out(self):
+        texti = int(self.aui.tableWidget.item(self.aui.tableWidget.currentRow(), 0).text())
+        current_date = datetime.now().date()
+        current_date_string = current_date.strftime('%d.%m.%Y')
+        date_rev=self.aui.lineEdit_15.text()
+        id_user = self.aui.lineEdit_13.text()
+        bd=Database()
+        bd.giving_book(id_user,texti,current_date_string,date_rev)
+
     def admin_search(self):
         search_text=str(self.aui.lineEdit_14.text())
         search_bool = int(self.aui.comboBox_3.currentIndex())
@@ -235,6 +246,7 @@ class UserInterface:
         self.aui.pushButton.clicked.connect(self.check_data)
         self.aui.pushButton_2.clicked.connect(self.add_data)
         self.aui.pushButton_3.clicked.connect(self.sample_deleting)
+        self.aui.pushButton_5.clicked.connect(self.given_out)
         self.ui.pushButton.clicked.connect(self.log_out)
         self.welcome_window.pushButton.clicked.connect(lambda :self.enterance("Тестировщик_читатель",4))
         self.welcome_window.pushButton_3.clicked.connect(self.login_user)
