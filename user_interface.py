@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, uic,QtGui
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem,QCompleter
 from database import Database
 from datetime import datetime
 
@@ -26,11 +26,11 @@ class UserInterface:
         aui.lineEdit_5.hide()
 
         print("UI Init complited")
-
         self.app = app
         self.ui = ui
         self.aui = aui
         self.welcome_window = welcome_window
+        self.bd = Database()
 
     def out_table(self, rows):  # Функция вывода датнных в таблицу пользовательского интерфейса
         print(f"out_table")
@@ -69,6 +69,19 @@ class UserInterface:
                     self.setColortoRow(x,0)
         self.ui.tableWidget_2.resizeColumnsToContents()
 
+    def admin_out_table_my_books(self,rows):
+        """вывод в окно моих книг"""
+        self.aui.tableWidget_2.setRowCount(len(rows))
+        self.aui.tableWidget_2.setColumnCount(6)
+        self.aui.tableWidget_2.setHorizontalHeaderLabels(
+            ['id книги', 'Название', 'Автор', 'Краткое описание','дата выдачи','дата возврата'])
+        for x in range(0, len(rows)):
+            for y in range(len(rows[x])):
+                self.aui.tableWidget_2.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
+                if y==5 and self.data_revision(str(rows[x][y])):
+                    self.setColortoRow(x,0)
+        self.aui.tableWidget_2.resizeColumnsToContents()
+
 
 
 
@@ -80,13 +93,13 @@ class UserInterface:
         if(current_date>a):
             return True
 
-    def setColortoRow(self, rowIndex,flag):
+    def setColortoRow(self, rowIndex, flag):
         if flag==0:
             for j in range(self.ui.tableWidget_2.columnCount()):
-                self.ui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(204,255,0))
+                self.ui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
         else:
             for j in range(self.aui.tableWidget.columnCount()):
-               self.aui.tableWidget.item(rowIndex, j).setBackground(QtGui.QColor(204,255,0))
+               self.aui.tableWidget.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
 
     def login_user(self):
         """"сбор данных логина из GUI и проверка с перадресацией на вход"""
@@ -94,8 +107,8 @@ class UserInterface:
         user_name = str(self.welcome_window.lineEdit.text())
         password = self.welcome_window.lineEdit_2.text()
         if (len(user_name)>0) and (len(password)>0):
-            bd=Database()
-            answer=bd.login_user(user_name,password) # возвращает все из бд
+
+            answer=self.bd.login_user(user_name,password) # возвращает все из бд
             if answer==[]:
                 self.welcome_window.label.setText('Такого пользователя нет')
                 return
@@ -113,29 +126,37 @@ class UserInterface:
         """Метод посика номера читателя по входным данным"""
         firs_name=self.aui.lineEdit_11.text()
         second_name=self.aui.lineEdit_12.text()
-        bd=Database()
-        users_looking_as_desc=bd.users_on_name(firs_name,second_name)
-        if(len(users_looking_as_desc)==1):
-            self.aui.lineEdit_13.setText(str(users_looking_as_desc[0][0]))
+        users_looking_as_desc=self.bd.users_on_name(firs_name,second_name)
 
+        if(len(users_looking_as_desc)==1):
+            id_reader=str(users_looking_as_desc[0][0])#
+            self.aui.lineEdit_13.setText(str(users_looking_as_desc[0][0]))
+        else:
+            self.aui.lineEdit_13.setText('')
+            id_reader = None
+        my_books = (self.bd.print_in_giu(self.bd.book_on_id_user(id_reader), 2))#
+        self.admin_out_table_my_books(my_books)#
 
     def enterance(self,name,id_reader):# сюда передовать имя и тд
         print(f"enterance")
         user_name=self.welcome_window.lineEdit.text()
         self.ui.label_6.setText(name)
         self.welcome_window.close()
-        bd=Database()
-        self.out_table(bd.print_in_giu(None,0))
-        my_books=(bd.print_in_giu(bd.book_on_id_user(id_reader),2))
+        self.out_table(self.bd.print_in_giu(None,0))
+        my_books=(self.bd.print_in_giu(self.bd.book_on_id_user(id_reader),2))
         self.out_table_my_books(my_books)
         self.ui.show()
 
     def admin_enterance(self):
         print(f"admin_enterance")
-        bd = Database()
-        self.out_table(bd.print_in_giu(None,1))
+        self.out_table(self.bd.print_in_giu(None,1))
         self.welcome_window.close()
         self.aui.show()
+        completer = QCompleter(['Петр Николавич','Евгений Сыпало','Евгений Второй'])
+        line_edit = self.aui.lineEdit_11
+
+        line_edit.setCompleter(completer)
+        completer.setCompletionMode(1)
 
     def index_changed(self):  # Вывод только необходимых строчек по количество авторов при добавлении
         count = int(self.aui.comboBox.currentText())
@@ -163,12 +184,11 @@ class UserInterface:
 
     def check_data(self):
         print(f"check_data")
-        bd = Database()
-        result = bd.check_adding(
+        result = self.bd.check_adding(
                             (str(self.aui.lineEdit_3.text())), (str(self.aui.lineEdit.text())),
                             (str(self.aui.lineEdit_2.text())), (str(self.aui.lineEdit_4.text())),
                             (str(self.aui.lineEdit_5.text())), int(self.aui.comboBox.currentText()))
-        self.out_table(bd.print_in_giu(None,1))
+        self.out_table(self.bd.print_in_giu(None,1))
 
         self.info(result)# Ловим result и отправляем его в другую функцию, которая выводит на экран
 
@@ -188,8 +208,7 @@ class UserInterface:
     def add_data(self):
         print(f"add_data")
         self.visible_butt(0)
-        bd = Database()
-        return bd.adding_writer(
+        return self.bd.adding_writer(
                              (str(self.aui.lineEdit_2.text())),
                              (str(self.aui.lineEdit_4.text())),
                              (str(self.aui.lineEdit_5.text())),
@@ -197,9 +216,8 @@ class UserInterface:
     def search(self):
         search_text=str(self.ui.lineEdit.text())
         search_bool = int(self.ui.comboBox.currentIndex())
-        bd=Database()
-        kpk=bd.search_fetchall(search_text,search_bool)
-        self.out_table(bd.print_in_giu(kpk,0))
+        kpk=self.bd.search_fetchall(search_text,search_bool)
+        self.out_table(self.bd.print_in_giu(kpk,0))
 
 
     def given_out(self):
@@ -208,16 +226,14 @@ class UserInterface:
         current_date_string = current_date.strftime('%d.%m.%Y')
         date_rev=self.aui.lineEdit_15.text()
         id_user = self.aui.lineEdit_13.text()
-        bd=Database()
-        bd.giving_book(id_user,texti,current_date_string,date_rev)
+        self.bd.giving_book(id_user,texti,current_date_string,date_rev)
+        self.out_table(self.bd.print_in_giu(None, 1))
 
     def admin_search(self):
         search_text=str(self.aui.lineEdit_14.text())
         search_bool = int(self.aui.comboBox_3.currentIndex())
-        bd=Database()
-        kpk=bd.search_fetchall(search_text,search_bool)
-        self.out_table(bd.print_in_giu(kpk,1))
-
+        kpk=self.bd.search_fetchall(search_text,search_bool)
+        self.out_table(self.bd.print_in_giu(kpk,1))
 
     def log_out(self):
         self.ui.close()
@@ -228,9 +244,8 @@ class UserInterface:
         try:
             texti=int(self.aui.tableWidget.item(self.aui.tableWidget.currentRow(), 0).text())
             print(texti)
-            bd=Database()
-            bd.deletingt(texti)
-            self.out_table(bd.print_in_giu(None,1))
+            self.bd.deletingt(texti)
+            self.out_table(self.bd.print_in_giu(None,1))
         except AttributeError:
             print('мы в ошибке')
 
