@@ -89,7 +89,7 @@ class UserInterface:
     def data_revision(self,date_for_revision):
         current_date = datetime.now().date()
         current_date_string = current_date.strftime('%d.%m.%Y')
-        print(current_date_string)
+        #print(current_date_string)
         a = (datetime.strptime(date_for_revision, '%d.%m.%Y')).date()
         if(current_date>a):
             return True
@@ -236,7 +236,11 @@ class UserInterface:
             self.bd.giving_book(id_user,texti,current_date_string,date_rev)
             self.out_table(self.bd.print_in_giu(None, 1))
             my_books = (self.bd.print_in_giu(self.bd.book_on_id_user(id_user), 2))
-            self.admin_out_table_my_books(my_books)  #
+            self.admin_out_table_my_books(my_books)
+        else:
+            self.err1.setWindowTitle('Ошибка выдачи')
+            self.err1.setText('Не заполнены поля')
+            self.err1.exec()
 
     def return_book(self):
         id_user = self.aui.lineEdit_13.text()
@@ -262,18 +266,27 @@ class UserInterface:
         self.welcome_window.show()
 
     def sample_deleting(self):
-        try:
-            texti=int(self.aui.tableWidget.item(self.aui.tableWidget.currentRow(), 0).text())
+        texti=int(self.aui.tableWidget.item(self.aui.tableWidget.currentRow(), 0).text())
+        self.err1.setWindowTitle('Удаление книги')
+        book_on_delete_name=self.bd.exec_book_name_on_id(texti)
+        text_message_err = str('Будет удалена Книга: "' + book_on_delete_name + '" c id: ' +str(texti))
+        self.err1.setText(text_message_err)
+        self.err1.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
+        self.err1.buttonClicked.connect(self.del_action)
+        self.err1.exec()
+            #self.bd.deletingt(texti)
+        self.out_table(self.bd.print_in_giu(None,1))
+        # except AttributeError:
+        #     print('мы в ошибке')
+        #     self.err1.setWindowTitle('Ошибка удаления')
+        #     self.err1.setText('Не выбраны поля')
+        #     self.err1.exec()
+
+    def del_action(self,btn):
+        if btn.text()=='OK':
+            texti = int(self.aui.tableWidget.item(self.aui.tableWidget.currentRow(), 0).text())
+            #self.bd.deletingt(texti)
             print(texti)
-            self.bd.deletingt(texti)
-            self.out_table(self.bd.print_in_giu(None,1))
-        except AttributeError:
-            print('мы в ошибке')
-            self.err1.setWindowTitle('Ошибка удаления')
-            self.err1.setText('Не выбраны поля')
-            self.err1.exec()
-
-
     def ui_start(self):
         # app start
         print("UI preparing")

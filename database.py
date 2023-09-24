@@ -37,7 +37,12 @@ class Database():
         self.cursor.execute("SELECT * FROM users WHERE login = ?", [user_name])
         user_data=self.cursor.fetchall()
         return user_data
-
+    def exec_book_name_on_id(self, id_book):
+        '''Возвращает название книги по ее id'''
+        self.cursor.execute("SELECT name FROM library5 WHERE id = ?", [id_book])
+        book_name = self.cursor.fetchone()
+        print(book_name[0])
+        return book_name[0]
 
     def print_in_giu(self, id, id_swich):
         """Выборка данных из таблиц library5 и authors для вывода"""
