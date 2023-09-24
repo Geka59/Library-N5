@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, uic,QtGui
-from PyQt5.QtWidgets import QTableWidgetItem,QCompleter
+from PyQt5.QtWidgets import QTableWidgetItem,QCompleter,QMessageBox
 from database import Database
 from datetime import datetime
 
@@ -8,7 +8,7 @@ class UserInterface:
     aui = None
     ui = None
     welcome_window = None
-
+    bd=None
     def __init__(self):
         # init
         app = QtWidgets.QApplication([])
@@ -21,10 +21,12 @@ class UserInterface:
         aui.comboBox.addItems(['1', '2', '3'])
         ui.comboBox.addItems(['Авторы', 'Книги'])
         aui.comboBox_3.addItems(['Авторы', 'Название'])
-
         aui.lineEdit_4.hide()
         aui.lineEdit_5.hide()
-
+        self.err1 = QMessageBox()
+        self.err1.setWindowTitle('Ошибка ввода')
+        self.err1.setText('Некоторые поля не заполнены или не выбрана книга')
+        self.err1.setIcon(QMessageBox.Warning)
         print("UI Init complited")
         self.app = app
         self.ui = ui
@@ -70,7 +72,7 @@ class UserInterface:
         self.ui.tableWidget_2.resizeColumnsToContents()
 
     def admin_out_table_my_books(self,rows):
-        """вывод в окно моих книг"""
+        """вывод в окно книг человека"""
         self.aui.tableWidget_2.setRowCount(len(rows))
         self.aui.tableWidget_2.setColumnCount(6)
         self.aui.tableWidget_2.setHorizontalHeaderLabels(
@@ -94,9 +96,10 @@ class UserInterface:
             return True
 
     def setColortoRow(self, rowIndex, flag):
+        '''Закраска таблиц по row index '''
         if flag==0:
             for j in range(self.ui.tableWidget_2.columnCount()):
-                self.ui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
+                self.ui.tbaleWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
         else:
             for j in range(self.aui.tableWidget.columnCount()):
                self.aui.tableWidget.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
@@ -221,14 +224,30 @@ class UserInterface:
 
 
     def given_out(self):
+        '''Функция выдачи книг'''
         texti = int(self.aui.tableWidget.item(self.aui.tableWidget.currentRow(), 0).text())
+        print(texti)
         current_date = datetime.now().date()
         current_date_string = current_date.strftime('%d.%m.%Y')
         date_rev=self.aui.lineEdit_15.text()
         id_user = self.aui.lineEdit_13.text()
-        self.bd.giving_book(id_user,texti,current_date_string,date_rev)
-        self.out_table(self.bd.print_in_giu(None, 1))
+        if (date_rev !='..') and(id_user != ''):
+            self.bd.giving_book(id_user,texti,current_date_string,date_rev)
+            self.out_table(self.bd.print_in_giu(None, 1))
+            my_books = (self.bd.print_in_giu(self.bd.book_on_id_user(id_user), 2))
+            self.admin_out_table_my_books(my_books)  #
 
+    def return_book(self):
+        id_user = self.aui.lineEdit_13.text()
+        if (id_user != '') and (self.aui.tableWidget_2.currentRow()!=-1):
+            id_book_row = int(self.aui.tableWidget_2.item(self.aui.tableWidget_2.currentRow(), 0).text())
+            self.bd.return_book_bd(id_book_row)
+            self.out_table(self.bd.print_in_giu(None, 1))
+            my_books = (self.bd.print_in_giu(self.bd.book_on_id_user(id_user), 2))
+            self.admin_out_table_my_books(my_books)
+        else:
+
+            self.err1.exec()
     def admin_search(self):
         search_text=str(self.aui.lineEdit_14.text())
         search_bool = int(self.aui.comboBox_3.currentIndex())
@@ -262,6 +281,7 @@ class UserInterface:
         self.aui.pushButton_2.clicked.connect(self.add_data)
         self.aui.pushButton_3.clicked.connect(self.sample_deleting)
         self.aui.pushButton_5.clicked.connect(self.given_out)
+        self.aui.pushButton_6.clicked.connect(self.return_book)
         self.ui.pushButton.clicked.connect(self.log_out)
         self.welcome_window.pushButton.clicked.connect(lambda :self.enterance("Тестировщик_читатель",4))
         self.welcome_window.pushButton_3.clicked.connect(self.login_user)

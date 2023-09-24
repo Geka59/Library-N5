@@ -94,7 +94,10 @@ class Database():
     def giving_book(self,id_user,id_book,date_now,date_ret):
         self.cursor.execute("UPDATE library5 SET reader=?, date_given_out=?, date_return=? WHERE id=?",[id_user,date_now,date_ret,id_book])
         self.dbLib.commit()
-
+    def return_book_bd(self,id_book):
+        self.cursor.execute("UPDATE library5 SET reader=?, date_given_out=?, date_return=? WHERE id=?",
+                            [None, None, None, id_book])
+        self.dbLib.commit()
     def ret_user_name_on_id(self,id):
          self.cursor.execute("SELECT name,surname from users WHERE id=?", [id])
          user_data=self.cursor.fetchall()
@@ -199,8 +202,3 @@ class Database():
                     "INNER JOIN library5 ON library5.id = books_authors.book_id "
                     f"WHERE author_name LIKE ? ", [search_in_table])
             return self.cursor.fetchall()
-            # else:
-            #     return []
-
-# обработка исключенй питон exeption try catch + допил интерфейса с одним окном и разными правами + удаление записей на админке.
-# p.test git Кнопка добавить автора, цвет изметить,
