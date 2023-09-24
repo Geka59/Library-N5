@@ -81,9 +81,8 @@ class UserInterface:
             for y in range(len(rows[x])):
                 self.aui.tableWidget_2.setItem(x, y, QTableWidgetItem(str(rows[x][y])))
                 if y==5 and self.data_revision(str(rows[x][y])):
-                    self.setColortoRow(x,0)
+                    self.setColortoRow(x,2)
         self.aui.tableWidget_2.resizeColumnsToContents()
-
 
 
 
@@ -99,11 +98,13 @@ class UserInterface:
         '''Закраска таблиц по row index '''
         if flag==0:
             for j in range(self.ui.tableWidget_2.columnCount()):
-                self.ui.tbaleWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
-        else:
+                self.ui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
+        elif flag==1:
             for j in range(self.aui.tableWidget.columnCount()):
                self.aui.tableWidget.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
-
+        else:
+            for j in range(self.aui.tableWidget_2.columnCount()):
+               self.aui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
     def login_user(self):
         """"сбор данных логина из GUI и проверка с перадресацией на вход"""
         answer=[]
@@ -246,7 +247,8 @@ class UserInterface:
             my_books = (self.bd.print_in_giu(self.bd.book_on_id_user(id_user), 2))
             self.admin_out_table_my_books(my_books)
         else:
-
+            self.err1.setWindowTitle('Ошибка ввода')
+            self.err1.setText('Некоторые поля не заполнены или не выбрана книга')
             self.err1.exec()
     def admin_search(self):
         search_text=str(self.aui.lineEdit_14.text())
@@ -267,6 +269,9 @@ class UserInterface:
             self.out_table(self.bd.print_in_giu(None,1))
         except AttributeError:
             print('мы в ошибке')
+            self.err1.setWindowTitle('Ошибка удаления')
+            self.err1.setText('Не выбраны поля')
+            self.err1.exec()
 
 
     def ui_start(self):
