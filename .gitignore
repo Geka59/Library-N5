@@ -1,0 +1,5 @@
+.coverage
+/venv/
+/.idea/
+htmlocv
+.pytest_cache

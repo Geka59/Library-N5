@@ -2,7 +2,8 @@
 # 1 Таблица хранит книги с кодами авторов.
 # 2 Таблица Данные о авторах
 # 3 Таблица Данные о читателях и работиках библиотеки
-
+# рефаткоринг database по отдельным функицям+ переписать тесты
+# тесты на ui ask how highlite part code
 import sqlite3
 
 
@@ -12,13 +13,17 @@ class DeletingError(Exception):
 
 
 class Database():
+
     def __init__(self):
         self.dbLib = sqlite3.connect("test_autors")
         self.cursor = self.dbLib.cursor()
 
     def print_all_db(self):
+        print(self)
         self.cursor.execute("SELECT * FROM library5")
-        print(self.cursor.fetchall())
+        all_db=self.cursor.fetchall()
+        #print(all_db)
+        return all_db
 
     def check_id_in_base(self,data_check):
         """Проверка существовяния всех id списка data_check в базе"""
@@ -99,13 +104,18 @@ class Database():
     def giving_book(self,id_user,id_book,date_now,date_ret):
         self.cursor.execute("UPDATE library5 SET reader=?, date_given_out=?, date_return=? WHERE id=?",[id_user,date_now,date_ret,id_book])
         self.dbLib.commit()
+
     def return_book_bd(self,id_book):
         self.cursor.execute("UPDATE library5 SET reader=?, date_given_out=?, date_return=? WHERE id=?",
                             [None, None, None, id_book])
         self.dbLib.commit()
-    def ret_user_name_on_id(self,id):
-         self.cursor.execute("SELECT name,surname from users WHERE id=?", [id])
-         user_data=self.cursor.fetchall()
+
+    def get_user_name_by_id(self, id):
+        self.cursor.execute("SELECT name,surname from users WHERE id=?", [id])
+        return self.cursor.fetchall()
+
+    def ret_user_name_on_id(self, id):
+         user_data=self.get_user_name_by_id(id)
          reverse_user_data= user_data[0][0]+' '+user_data[0][1]
          return reverse_user_data
 

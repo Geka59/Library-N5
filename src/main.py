@@ -1,5 +1,4 @@
 from user_interface import UserInterface
-from database import Database
 
 
 def main():
