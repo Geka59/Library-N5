@@ -34,6 +34,11 @@ class UserInterface:
         self.err1.setWindowTitle('Ошибка ввода')
         self.err1.setText('Некоторые поля не заполнены или не выбрана книга')
         self.err1.setIcon(QMessageBox.Warning)
+
+        self.add_b = QMessageBox()
+        self.add_b.setWindowTitle('Информация добавления книги')
+        self.add_b.setText('Бип боп')
+        self.add_b.setIcon(QMessageBox.Information)
         print("UI Init complited")
         self.app = app
         self.ui = ui
@@ -92,6 +97,12 @@ class UserInterface:
                     self.setColortoRow(x, 2)
         self.aui.tableWidget_2.resizeColumnsToContents()
 
+    def print_succes(self,message_text):
+        self.suc = QMessageBox()
+        self.suc.setWindowTitle('Ура')
+        self.suc.setText(message_text)
+        #self.suc.setIcon(QMessageBox.Information)
+        self.suc.exec()
     def data_revision(self, date_for_revision):
         current_date = datetime.now().date()
         current_date_string = current_date.strftime('%d.%m.%Y')
@@ -193,36 +204,47 @@ class UserInterface:
         else:
             self.aui.pushButton_2.hide()
 
-    def check_data(self):
-        print(f"check_data")
-        result = self.bd.check_adding(
-            (str(self.aui.lineEdit_3.text())), (str(self.aui.lineEdit.text())),
+    def check_data_adding_book(self):
+        print(f"check_data_adding_book")
+        data_on_adding=[(str(self.aui.lineEdit_3.text())), (str(self.aui.lineEdit.text())),
             (str(self.aui.lineEdit_2.text())), (str(self.aui.lineEdit_4.text())),
-            (str(self.aui.lineEdit_5.text())), int(self.aui.comboBox.currentText()))
+            (str(self.aui.lineEdit_5.text()))]
+        count_author_in_ui=int(self.aui.comboBox.currentText())
+        result = self.bd.check_adding(data_on_adding,count_author_in_ui)
+        self.info(result)  # Ловим result и отправляем его в другую функцию, которая выводит на экран
         self.out_table(self.bd.print_in_giu(None, 1))
 
-        self.info(result)  # Ловим result и отправляем его в другую функцию, которая выводит на экран
-
     def info(self, result):
-        if result == 0:
-            self.text_field('Успешно добавлено')
-            self.visible_butt(0)
-        elif result == 1:
-            self.text_field('Пустое поле!')
-        elif result == 2:
-            self.text_field('Такая книга уже есть')
-        elif result == 3:
+        if result[0][0] == 0:
+            self.print_succes(f'✅   Книга добавлена id {(result[1][0])}')
+            return
+        #       self.add_b.setText(f'Кнгига успешно добавлена id {result[0]}')
+        # #     self.text_field('Успешно добавлено')
+        #     self.visible_butt(0)
+        elif result[0][0] == 1:
+            #self.text_field('Пустое поле!')
+            self.add_b.setText('Не заполнено поле')
+        elif result[0][0] == 2:
+            #self.text_field('Такая книга уже есть')
+            self.add_b.setText(f'В базе уже есть книга с таким названием и id {result[0][1]}. Добавить еще одну?')
+            self.add_b.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        elif result[0][0] == 3:
+            self.add_b.setText(f'В базе нет такого автора {result[0][1]}. Добавить автора?')
+            self.add_b.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             self.text_field('Такого автора нет ')
-            self.visible_butt(1)
+            #self.visible_butt(1)
+        button=self.add_b.exec()
+        self.dialog_result(button,result)
 
-    def add_data(self):
-        print(f"add_data")
-        self.visible_butt(0)
-        return self.bd.adding_writer(
-            (str(self.aui.lineEdit_2.text())),
-            (str(self.aui.lineEdit_4.text())),
-            (str(self.aui.lineEdit_5.text())),
-            int(self.aui.comboBox.currentText()))
+    def dialog_result(self,button,result):
+        if button== QMessageBox.Ok and result[0][0]==3:# Это если на добавление автора
+            print(result)
+            self.bd.adding_writer(result[0][1])
+            self.print_succes(f'✅       Автор {result[0][1]} добавлен')
+        if button== QMessageBox.Ok and result[0][0]==2:#Это на дабавление такой же книги
+            book_id=self.bd.adding_book(result[1],result[2])
+            self.print_succes(f'✅   Книга добавлена id {book_id}')
+        #self.out_table(self.bd.print_in_giu(None, 1))
 
     def search(self):
         search_text = str(self.ui.lineEdit.text())
@@ -292,7 +314,7 @@ class UserInterface:
     def del_action(self, btn):
         if btn.text() == 'OK':
             texti = int(self.aui.tableWidget.item(self.aui.tableWidget.currentRow(), 0).text())
-            # self.bd.deletingt(texti)
+            self.bd.deletingt(texti)
             print(texti)
 
     def ui_start(self):
@@ -303,8 +325,8 @@ class UserInterface:
         self.aui.lineEdit_14.textChanged.connect(self.admin_search)
         self.aui.lineEdit_11.textChanged.connect(self.search_id)
         self.aui.lineEdit_12.textChanged.connect(self.search_id)
-        self.aui.pushButton.clicked.connect(self.check_data)
-        self.aui.pushButton_2.clicked.connect(self.add_data)
+        self.aui.pushButton.clicked.connect(self.check_data_adding_book)
+        #self.aui.pushButton_2.clicked.connect(self.add_data)
         self.aui.pushButton_3.clicked.connect(self.sample_deleting)
         self.aui.pushButton_5.clicked.connect(self.given_out)
         self.aui.pushButton_6.clicked.connect(self.return_book)

@@ -2,10 +2,9 @@
 # 1 Таблица хранит книги с кодами авторов.
 # 2 Таблица Данные о авторах
 # 3 Таблица Данные о читателях и работиках библиотеки
-# рефаткоринг database по отдельным функицям+ переписать тесты
+# рефаткоринг database по отдельным функицям+ переписать тесты допил удаления
 # тесты на ui ask how highlite part code
 import sqlite3
-
 
 # from sqlite3 import Cursor
 class DeletingError(Exception):
@@ -130,61 +129,107 @@ class Database():
         self.cursor.execute("SELECT id from library5 WHERE reader=?",[id_user])
         return self.cursor.fetchall()
 
-    def check_adding(self, book_name: str, book_descript: str, writer_book1: str, writer_book2: str, writer_book3: str,
-                     count_authors: int):
-        if ((len(book_name) == 0 or len(book_descript) == 0 or len(writer_book1) < 4) or (
-                count_authors > 1 and len(writer_book2) < 4)):
-            return 1
-        self.cursor.execute("SELECT id FROM library5 WHERE name = ?", [book_name])
-        if len(self.cursor.fetchall()) != 0:
-            return 2
-        self.cursor.execute("SELECT id FROM authors WHERE author_name=?", [writer_book1])
-        aut1 = self.cursor.fetchone()
-        self.cursor.execute("SELECT id FROM authors WHERE author_name=?", [writer_book2])
-        aut2 = self.cursor.fetchone()
-        self.cursor.execute("SELECT id FROM authors WHERE author_name=?", [writer_book3])
-        aut3 = self.cursor.fetchone()
+    def check_adding(self,data_about_book,count_authors):
+        '''Прооверка введеных данных на добавление книги'''
+        if (data_about_book[0]=='' or data_about_book[1]==''):
+            return [1],[]
+        for m in range(count_authors):
+            if len(data_about_book[2+m])<4:
+                return [1],[] #Проверка на пустые поля
 
-        if count_authors == 1:
-            if aut1 is not None:
+        book_name=data_about_book[0]
+        for i in range(count_authors):
+            id_author=self.ret_id_author(data_about_book[i+2]) # выбор авторов из массива
+            if id_author is None:
+                print(f'{i+1} Автора нет')
+                return [3,data_about_book[i+2]],data_about_book,count_authors
+        ###Проверка существования данной книги
+        book_in_base=self.ret_id_book(data_about_book[0])
+        if book_in_base!=[]:
+            for k in range(len(book_in_base)):
+                print(f'Такая книжка уже есть с id{book_in_base[k][0]}')
+                return [2,book_in_base[k][0]],data_about_book, count_authors
+        # чето делаем
+        # выводим ошибки если еть retur
+        id_book=self.adding_book(data_about_book, count_authors)# Все ок можно добавлять
+        return [0],[id_book]
 
-                self.adding_book(book_name, book_descript, aut1, aut2, aut3, count_authors)
+    def ret_id_book(self, name_book):
+        self.cursor.execute("SELECT id FROM library5 WHERE name=?", [name_book])
+        return self.cursor.fetchall()
 
-            else:
-                return 3
-        elif count_authors == 2:
-            if (aut1 is not None) and (aut2 is not None):
-                self.adding_book(book_name, book_descript, aut1, aut2, aut3, count_authors)
-            else:
-                return 3
-        elif count_authors == 3:
-            if (aut1 is not None) and (aut2 is not None) and (aut3 is not None):
-                self.adding_book(book_name, book_descript, aut1, aut2, aut3, count_authors)
-            else:
-                return 3
+    def ret_id_author(self,author_name):
+        self.cursor.execute("SELECT id FROM authors WHERE author_name=?",[author_name])
+        return self.cursor.fetchone()
 
-        return 0
 
-    def adding_book(self, wbook_name, wbook_descript, author1_id, author2_id, author3_id, count_authors):
-        wr_data = [None, wbook_name, wbook_descript, None]
-        # raise CustomException
-        # print('dffnfj')
-        self.cursor.execute("INSERT INTO library5 VALUES(?,?,?,?)", wr_data)
+
+
+
+        # if ((len(book_name) == 0 or len(book_descript) == 0 or len(writer_book1) < 4) or (
+        #         count_authors > 1 and len(writer_book2) < 4)):
+        #     return 1
+        # self.cursor.execute("SELECT id FROM library5 WHERE name = ?", [book_name])
+        # if len(self.cursor.fetchall()) != 0:
+        #     return 2
+        # self.cursor.execute("SELECT id FROM authors WHERE author_name=?", [writer_book1])
+        # aut1 = self.cursor.fetchone()
+        # self.cursor.execute("SELECT id FROM authors WHERE author_name=?", [writer_book2])
+        # aut2 = self.cursor.fetchone()
+        # self.cursor.execute("SELECT id FROM authors WHERE author_name=?", [writer_book3])
+        # aut3 = self.cursor.fetchone()
+        #
+        # if count_authors == 1:
+        #     if aut1 is not None:
+        #
+        #         self.adding_book(book_name, book_descript, aut1, aut2, aut3, count_authors)
+        #
+        #     else:
+        #         return 3
+        # elif count_authors == 2:
+        #     if (aut1 is not None) and (aut2 is not None):
+        #         self.adding_book(book_name, book_descript, aut1, aut2, aut3, count_authors)
+        #     else:
+        #         return 3
+        # elif count_authors == 3:
+        #     if (aut1 is not None) and (aut2 is not None) and (aut3 is not None):
+        #         self.adding_book(book_name, book_descript, aut1, aut2, aut3, count_authors)
+        #     else:
+        #         return 3
+        #
+        # return 0
+
+    def adding_book(self,book_data, count_authors):
+        print(book_data)
+        wbook_name= book_data[0]
+        wbook_descript=book_data[1]
+        # wr_data = [None, wbook_name, wbook_descript, None]
+        wr_data = [wbook_name, wbook_descript]
+        # # # raise CustomException
+        # # # print('dffnfj')
+        # self.cursor.execute("INSERT INTO library5 VALUES(?,?,?,?)", wr_data)
+        self.cursor.execute("INSERT INTO library5 (name,annotation) VALUES(?,?)", wr_data)
         self.dbLib.commit()
-        self.cursor.execute("SELECT id FROM library5 WHERE name=?", [wbook_name])
-        book_id = self.cursor.fetchone()[0]
-        self.cursor.execute("INSERT INTO books_authors VALUES(?,?)", [book_id, author1_id[0]])
-        if count_authors == 2:
-            self.cursor.execute("INSERT INTO books_authors VALUES(?,?)", [book_id, author2_id[0]])
-        if count_authors == 3:
-            self.cursor.execute("INSERT INTO books_authors VALUES(?,?)", [book_id, author3_id[0]])
+        book_id=max(self.ret_id_book(book_data[0]))[0]
+        print(book_id)
+        for i in range(count_authors):
+            author_id=self.ret_id_author(book_data[2+i])[0]
+            self.cursor.execute("INSERT INTO books_authors VALUES(?,?)", [book_id,author_id])
+        #if count_authors == 2:
+        #     self.cursor.execute("INSERT INTO books_authors VALUES(?,?)", [book_id, author2_id[0]])
+        #if count_authors == 3:
+        #     self.cursor.execute("INSERT INTO books_authors VALUES(?,?)", [book_id, author3_id[0]])
         self.dbLib.commit()
-        return None
+        return book_id
+        # Надо написать все океее
 
-    # #def adding_writer(self,author1, author2, author3, count_authors):  # Отправки запроса на кнопку добавления автора
-    #   #  wr_data_a = [None, author1]
-    #     cursor.execute("INSERT INTO authors VALUES(?,?)", wr_data_a)
-    #     dbLib.commit
+
+
+    def adding_writer(self,author):  # Отправки запроса на кнопку добавления автора
+         wr_data_a = [None, author]
+         self.cursor.execute("INSERT INTO authors VALUES(?,?)", wr_data_a)
+         self.dbLib.commit()
+
     def deletingt(self, id_book):
         list_for_check = []
         self.cursor.execute("SELECT id FROM library5")
