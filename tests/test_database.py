@@ -58,12 +58,16 @@ class DatabaseTest(TestCase):
 
     @mock.patch('database.sqlite3')
     @patch.object(Database,'adding_book')
-    def test_check_adding(self,moсk_adding_book,sqlite3):
+    @patch.object(Database, 'ret_id_author')
+    def test_check_adding(self,mock_id_author,moсk_adding_book,sqlite3):
         db = Database()
-        sqlite3.connect.return_value.cursor.return_value.fetchall.side_effect = [[('Книга1')],[],[('Автор1',)],[('Автор2',)],[('Автор3',)]]
-        self.assertEqual(db.check_adding('','','','','',2),1)
-        self.assertEqual(db.check_adding('Book name', 'book desc', 'Author1', '', '', 1), 2)
-        self.assertEqual(db.check_adding('Book name', 'book desc', 'Author1', '', '', 1), 0)
+        moсk_adding_book.return_value=3 #возращаемый id
+        mock_id_author.return_value=None
+        #sqlite3.connect.return_value.cursor.return_value.fetchall.side_effect = [[('Книга1')],[],[('Автор1',)],[('Автор2',)],[('Автор3',)]]
+        self.assertEqual(db.check_adding(['','','','',''],2),([1],[]))
+        self.assertEqual(db.check_adding(['Book name', 'book desc', 'Author1', '', ''], 1), ([3,'Author1'],['Book name', 'book desc', 'Author1', '', ''],1))
+
+        #self.assertEqual(db.check_adding('Book name', 'book desc', 'Author1', '', '', 1), 0)
 
     @mock.patch('database.sqlite3')
     def test_deletingt(self,sqlite3):

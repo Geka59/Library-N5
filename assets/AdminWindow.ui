@@ -201,17 +201,6 @@
           <item>
            <layout class="QGridLayout" name="gridLayout_4">
             <item row="5" column="3">
-             <widget class="QPushButton" name="pushButton_5">
-              <property name="text">
-               <string>Выдать книгу</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>44-448760_clipart-icon-book-book-clipart.png</normaloff>44-448760_clipart-icon-book-book-clipart.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="4">
              <widget class="QPushButton" name="pushButton_6">
               <property name="text">
                <string>Принять книгу</string>
@@ -222,30 +211,19 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="3">
-             <widget class="QLineEdit" name="lineEdit_12">
-              <property name="font">
-               <font>
-                <family>BrokenLed</family>
-                <pointsize>10</pointsize>
-               </font>
+            <item row="5" column="2">
+             <widget class="QPushButton" name="pushButton_5">
+              <property name="text">
+               <string>Выдать книгу</string>
               </property>
-              <property name="styleSheet">
-               <string notr="true"/>
-              </property>
-              <property name="inputMask">
-               <string/>
-              </property>
-              <property name="readOnly">
-               <bool>false</bool>
-              </property>
-              <property name="placeholderText">
-               <string/>
+              <property name="icon">
+               <iconset>
+                <normaloff>44-448760_clipart-icon-book-book-clipart.png</normaloff>44-448760_clipart-icon-book-book-clipart.png</iconset>
               </property>
              </widget>
             </item>
-            <item row="2" column="0" colspan="3">
-             <widget class="QLabel" name="label_18">
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_21">
               <property name="font">
                <font>
                 <family>BrokenLed</family>
@@ -253,7 +231,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Фамилия читателя</string>
+               <string>ID Читателя</string>
               </property>
              </widget>
             </item>
@@ -270,7 +248,7 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="4" rowspan="2">
+            <item row="1" column="3" rowspan="2">
              <widget class="QLineEdit" name="lineEdit_13">
               <property name="enabled">
                <bool>false</bool>
@@ -295,19 +273,6 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="4">
-             <widget class="QLabel" name="label_21">
-              <property name="font">
-               <font>
-                <family>BrokenLed</family>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>ID Читателя</string>
-              </property>
-             </widget>
-            </item>
             <item row="4" column="0">
              <widget class="QLabel" name="label_19">
               <property name="font">
@@ -321,7 +286,26 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="3">
+            <item row="4" column="3">
+             <widget class="QComboBox" name="comboBox_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="editable">
+               <bool>false</bool>
+              </property>
+              <property name="currentText">
+               <string/>
+              </property>
+              <property name="currentIndex">
+               <number>-1</number>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="2">
              <widget class="QLineEdit" name="lineEdit_15">
               <property name="font">
                <font>
@@ -346,23 +330,10 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="3">
+            <item row="4" column="2">
              <widget class="QLineEdit" name="lineEdit_14"/>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_20">
-              <property name="font">
-               <font>
-                <family>BrokenLed</family>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Дата возврата</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3">
+            <item row="1" column="2">
              <widget class="QLineEdit" name="lineEdit_11">
               <property name="font">
                <font>
@@ -384,26 +355,20 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="4">
-             <widget class="QComboBox" name="comboBox_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_20">
+              <property name="font">
+               <font>
+                <family>BrokenLed</family>
+                <pointsize>9</pointsize>
+               </font>
               </property>
-              <property name="editable">
-               <bool>false</bool>
-              </property>
-              <property name="currentText">
-               <string/>
-              </property>
-              <property name="currentIndex">
-               <number>-1</number>
+              <property name="text">
+               <string>Дата возврата</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
+            <item row="0" column="2">
              <widget class="QComboBox" name="comboBox_4">
               <property name="editable">
                <bool>true</bool>
