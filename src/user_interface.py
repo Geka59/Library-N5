@@ -1,15 +1,17 @@
 import pathlib
 
 from PyQt5 import QtWidgets, uic, QtGui, QtCore
-from PyQt5.QtCore import QPropertyAnimation, Qt,QStringListModel
+from PyQt5.QtCore import QPropertyAnimation, Qt, QStringListModel
 from PyQt5.QtWidgets import QTableWidgetItem, QCompleter, QMessageBox
-from postgre_database import DatabasePostgre #todo на postgre
+from postgre_database import DatabasePostgre
 from datetime import datetime
 
 ASSET_PATH = f"{pathlib.Path(__file__).parents[1]}/assets"
 print(ASSET_PATH)
+
+
 #
-#ui-model-db_postgre
+# ui-model-db_postgre
 class UserInterface:
     app = None
     aui = None
@@ -17,17 +19,26 @@ class UserInterface:
     welcome_window = None
     bd = None
 
-    def __init__(self):
+    def __init__(self, database):
         # init
         app = QtWidgets.QApplication([])
         welcome_window = uic.loadUi(f"{ASSET_PATH}\WelcomeWindow.ui")
         welcome_window.setWindowTitle(f"{ASSET_PATH}\Вход")
         aui: object = uic.loadUi(f"{ASSET_PATH}\AdminWindow.ui")
+        # File = QtCore.QFile(f"{ASSET_PATH}\Cstartpage.qss")
+        # if not File.open( QtCore.QFile.ReadOnly | QtCore.QFile.Text):
+        #     return
+        #
+        # qss = QtCore.QTextStream(File)
+        #
+        # # setup stylesheet
+        # app.setStyleSheet(qss.readAll())
+
         ui = uic.loadUi(f"{ASSET_PATH}\WindowMain.ui")
         ui.setWindowTitle("Library № 5")  # Начальные настройки фронта
         aui.pushButton_2.hide()
         aui.comboBox.addItems(['1', '2', '3'])
-        #ui.comboBox.addItems(['Авторы', 'Книги'])
+        # ui.comboBox.addItems(['Авторы', 'Книги'])
         aui.comboBox_3.addItems(['Авторы', 'Название'])
         aui.lineEdit_4.hide()
         aui.lineEdit_5.hide()
@@ -35,7 +46,6 @@ class UserInterface:
         self.err1.setWindowTitle('Ошибка ввода')
         self.err1.setText('Некоторые поля не заполнены или не выбрана книга')
         self.err1.setIcon(QMessageBox.Warning)
-
 
         self.add_b = QMessageBox()
         self.add_b.setWindowTitle('Информация добавления книги')
@@ -46,15 +56,10 @@ class UserInterface:
         self.ui = ui
         self.aui = aui
         self.welcome_window = welcome_window
-        self.bd = DatabasePostgre()
+        self.bd = database
         self.ui.checkBox_3.setChecked(True)
         self.ui.checkBox.setChecked(True)
         self.ui.checkBox_2.setChecked(True)
-
-
-
-
-
 
         self.completer_authors_adding = QCompleter()
         self.aui.lineEdit_2.setCompleter(self.completer_authors_adding)
@@ -62,10 +67,10 @@ class UserInterface:
         self.aui.lineEdit_5.setCompleter(self.completer_authors_adding)
         self.completer_authors_adding.setFilterMode(Qt.MatchContains)
         self.completer_authors_adding.setCaseSensitivity(Qt.CaseInsensitive)
-        self.model_authors_adding=QStringListModel(self.completer_authors_adding)
+        self.model_authors_adding = QStringListModel(self.completer_authors_adding)
         self.completer_authors_adding.setModel(self.model_authors_adding)
 
-        self.completer_users= QCompleter()
+        self.completer_users = QCompleter()
         self.aui.lineEdit_11.setCompleter(self.completer_users)
 
         self.completer_users.setFilterMode(Qt.MatchContains)
@@ -94,27 +99,26 @@ class UserInterface:
         # self.completer_books_for_user = QCompleter(self.prep_all_books())
         # self.completer_authors_for_user = QCompleter(authors_list)
 
-
     def prep_arr_names(self):
-        out_arr=[]
-        all_data =self.bd.get_name_surname_all()
+        out_arr = []
+        all_data = self.bd.get_name_surname_all()
         for i in range(len(all_data)):
             for a in range(2):
-                name=all_data[i][a]
-                surname=all_data[i][1-a]
-                out_arr.append(name+' '+surname)
-        #print(out_arr)
+                name = all_data[i][a]
+                surname = all_data[i][1 - a]
+                out_arr.append(name + ' ' + surname)
+        # print(out_arr)
         return out_arr
 
     def prep_all_authors(self):
-        out_arr=[]
+        out_arr = []
         all_data = self.bd.get_authors_name()
         for i in range(len(all_data)):
             out_arr.append(all_data[i][0])
         return out_arr
 
     def prep_all_books(self):
-        out_arr=[]
+        out_arr = []
         all_data = self.bd.get_books_names()
         for i in range(len(all_data)):
             out_arr.append(all_data[i][0])
@@ -183,7 +187,7 @@ class UserInterface:
                     self.setColortoRow(x, 2)
         self.aui.tableWidget_2.resizeColumnsToContents()
 
-    def print_succes(self,message_text):
+    def print_succes(self, message_text):
         self.suc = QMessageBox()
         self.suc.setWindowTitle('Ура')
         self.suc.setText(message_text)
@@ -200,7 +204,7 @@ class UserInterface:
         '''Закраска таблиц по row index '''
         if flag == 0:
             for j in range(self.ui.tableWidget_2.columnCount()):
-                #print(j)
+                # print(j)
                 self.ui.tableWidget_2.item(rowIndex, j).setBackground(QtGui.QColor(255, 125, 12))
         elif flag == 1:
             for j in range(self.aui.tableWidget.columnCount()):
@@ -234,10 +238,10 @@ class UserInterface:
         """Метод посика номера читателя по входным данным"""
         first_last_name = self.aui.lineEdit_11.text()
         users_looking_as_desc = self.bd.users_on_name(first_last_name)
-        new_list=self.parce_username_for_compeleter(users_looking_as_desc)
-        #names_users_list = self.prep_arr_names() # todo загружать usesr like descript в completer
+        new_list = self.parce_username_for_compeleter(users_looking_as_desc)
+        # names_users_list = self.prep_arr_names() # todo загружать usesr like descript в completer
         self.model_users.setStringList(new_list)
-        #print(users_looking_as_desc)
+        # print(users_looking_as_desc)
         if (len(users_looking_as_desc) == 1):
             id_reader = str(users_looking_as_desc[0][0])  #
             self.aui.lineEdit_13.setText(str(users_looking_as_desc[0][0]))
@@ -246,13 +250,13 @@ class UserInterface:
             id_reader = None
         my_books = (self.bd.print_in_giu(self.bd.book_on_id_user(id_reader), 2))  #
         self.admin_out_table_my_books(my_books)  #
-    def parce_username_for_compeleter(self,arr_names):
-        arr_output=[]
+
+    def parce_username_for_compeleter(self, arr_names):
+        arr_output = []
         for i in range(len(arr_names)):
-            full_name=arr_names[i][3]+' '+arr_names[i][4]
+            full_name = arr_names[i][3] + ' ' + arr_names[i][4]
             arr_output.append(full_name)
         return arr_output
-
 
     def enterance(self, name, id_reader):  # сюда передовать имя и тд
         print(f"enterance")
@@ -296,11 +300,11 @@ class UserInterface:
 
     def check_data_adding_book(self):
         print(f"check_data_adding_book")
-        data_on_adding=[(str(self.aui.lineEdit_3.text())), (str(self.aui.lineEdit.text())),
-            (str(self.aui.lineEdit_2.text())), (str(self.aui.lineEdit_4.text())),
-            (str(self.aui.lineEdit_5.text()))]
-        count_author_in_ui=int(self.aui.comboBox.currentText())
-        result = self.bd.check_adding(data_on_adding,count_author_in_ui)
+        data_on_adding = [(str(self.aui.lineEdit_3.text())), (str(self.aui.lineEdit.text())),
+                          (str(self.aui.lineEdit_2.text())), (str(self.aui.lineEdit_4.text())),
+                          (str(self.aui.lineEdit_5.text()))]
+        count_author_in_ui = int(self.aui.comboBox.currentText())
+        result = self.bd.check_adding(data_on_adding, count_author_in_ui)
         self.info(result)  # Ловим result и отправляем его в другую функцию, которая выводит на экран
         self.out_table(self.bd.print_in_giu(None, 1))
 
@@ -318,26 +322,26 @@ class UserInterface:
             self.add_b.setText(f'В базе нет такого автора {result[0][1]}. Добавить автора?')
             self.add_b.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             self.text_field('Такого автора нет ')
-        button=self.add_b.exec()
-        self.dialog_result(button,result)
+        button = self.add_b.exec()
+        self.dialog_result(button, result)
 
-    def dialog_result(self,button,result):
-        if button== QMessageBox.Ok and result[0][0]==3:# Это если на добавление автора
+    def dialog_result(self, button, result):
+        if button == QMessageBox.Ok and result[0][0] == 3:  # Это если на добавление автора
             print(result)
             self.bd.adding_writer(result[0][1])
             self.print_succes(f'✅       Автор {result[0][1]} добавлен')
-        if button== QMessageBox.Ok and result[0][0]==2:#Это на дабавление такой же книги
-            book_id=self.bd.adding_book(result[1],result[2])
+        if button == QMessageBox.Ok and result[0][0] == 2:  # Это на дабавление такой же книги
+            book_id = self.bd.adding_book(result[1], result[2])
             self.print_succes(f'✅   Книга добавлена id {book_id}')
-        #self.out_table(self.bd.print_in_giu(None, 1))
+        # self.out_table(self.bd.print_in_giu(None, 1))
 
-    def search(self): #todo пилим фильтр
+    def search(self):  # todo пилим фильтр
         search_text = str(self.ui.lineEdit.text())
-        bool_authors=self.ui.checkBox.isChecked()
-        bool_desc=self.ui.checkBox_2.isChecked()
-        bool_books=self.ui.checkBox_3.isChecked()
-        bool_given=self.ui.radioButton.isChecked()
-        search_bool =[bool_authors,bool_books,bool_desc,bool_given]
+        bool_authors = self.ui.checkBox.isChecked()
+        bool_desc = self.ui.checkBox_2.isChecked()
+        bool_books = self.ui.checkBox_3.isChecked()
+        bool_given = self.ui.radioButton.isChecked()
+        search_bool = [bool_authors, bool_books, bool_desc, bool_given]
         print(search_bool)
         kpk = self.bd.search_fetchall(search_text, search_bool)
         self.out_table(self.bd.print_in_giu(kpk, 0))
@@ -375,20 +379,21 @@ class UserInterface:
 
     def admin_search(self):
         search_text = str(self.aui.lineEdit_14.text())
-        search_bool = int(self.aui.comboBox_3.currentIndex()) #todo сменять посик при смене
-        #if search_bool==1:# todo динамическое обновление compliterов
+        search_bool = int(self.aui.comboBox_3.currentIndex())  # todo сменять посик при смене
+        # if search_bool==1:# todo динамическое обновление compliterов
 
-            #self.aui.lineEdit_14.setCompleter(self.completer_books_admin)
-        #else:
-            #self.aui.lineEdit_14.setCompleter(self.completer_authors)
+        # self.aui.lineEdit_14.setCompleter(self.completer_books_admin)
+        # else:
+        # self.aui.lineEdit_14.setCompleter(self.completer_authors)
         kpk = self.bd.search_fetchall(search_text, search_bool)
         self.out_table(self.bd.print_in_giu(kpk, 1))
-    def update_competers_authrs(self):
-        #search_author=self.aui.lineEdit_2.text()
-        #authors_looking=self.bd.authors_looking_as(search_author[2:])
-        #print(authors_looking)
 
-        authors_list=self.prep_all_authors()
+    def update_competers_authrs(self):
+        # search_author=self.aui.lineEdit_2.text()
+        # authors_looking=self.bd.authors_looking_as(search_author[2:])
+        # print(authors_looking)
+
+        authors_list = self.prep_all_authors()
         self.model_authors_adding.setStringList(authors_list)
 
     def log_out(self):
@@ -407,6 +412,7 @@ class UserInterface:
         self.err1.exec()
 
         self.out_table(self.bd.print_in_giu(None, 1))
+
     def del_action(self, btn):
         if btn.text() == 'OK':
             texti = int(self.aui.tableWidget.item(self.aui.tableWidget.currentRow(), 0).text())
@@ -414,17 +420,18 @@ class UserInterface:
             print(texti)
 
     def slide_filters(self):
-        frame_size=self.ui.horizontalFrame.height()
-        if frame_size==1:
-            new_size=50
+        frame_size = self.ui.horizontalFrame.height()
+        if frame_size == 1:
+            new_size = 50
         else:
-            new_size=1
-        self.animation=QPropertyAnimation(self.ui.horizontalFrame,b"maximumHeight")
+            new_size = 1
+        self.animation = QPropertyAnimation(self.ui.horizontalFrame, b"maximumHeight")
         self.animation.setDuration(250)
         self.animation.setStartValue(frame_size)
         self.animation.setEndValue(new_size)
-        self.animation.setEasingCurve(QtCore.QEasingCurve. InOutQuart)
+        self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
         self.animation.start()
+
     def ui_start(self):
         # app start
         print("UI preparing")
@@ -432,11 +439,12 @@ class UserInterface:
         self.ui.lineEdit.textChanged.connect(self.search)
         self.aui.lineEdit_14.textChanged.connect(self.admin_search)
         self.aui.lineEdit_11.textChanged.connect(self.search_id)
-        #self.aui.lineEdit_12.textChanged.connect(self.search_id)
+        # self.aui.lineEdit_12.textChanged.connect(self.search_id)
         self.ui.filter_button.clicked.connect(self.slide_filters)
         self.aui.pushButton.clicked.connect(self.check_data_adding_book)
-        self.aui.lineEdit_2.textEdited.connect(self.update_competers_authrs)            #для обновления completer ов авторов на добавление
-        #self.aui.pushButton_2.clicked.connect(self.add_data)
+        self.aui.lineEdit_2.textEdited.connect(
+            self.update_competers_authrs)  # для обновления completer ов авторов на добавление
+        # self.aui.pushButton_2.clicked.connect(self.add_data)
         self.aui.pushButton_3.clicked.connect(self.sample_deleting)
         self.aui.pushButton_5.clicked.connect(self.given_out)
         self.aui.pushButton_6.clicked.connect(self.return_book)

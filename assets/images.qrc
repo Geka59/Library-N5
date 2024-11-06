@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>png-clipart-computer-icons-login-google-account-internet-user-cdr-monochrome.png</file>
+    <file>Без имени.jpg</file>
+  </qresource>
+</RCC>
