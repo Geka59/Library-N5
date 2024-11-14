@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}
+Главнаая страница сайтика
+{% endblock %}
+
+{% block content %}
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Library
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Roboto', sans-serif;
+        }
+  </style>
+ </head>
+ <body class="bg-gray-100 text-gray-900">
+
+  <main class="container mx-auto p-4 bg-white">
+   <section class="mb-8">
+    <h2 class="text-3xl font-bold mb-4">
+     Recommended
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'The Great Gatsby' by F. Scott Fitzgerald" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/6mbt8q8RGAJxCJU02tEMCMYJ64rPRXPn1isHU6Fq0jG5eJ3JA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       {{popular['Октавия на сверхзвуке'][0]}}
+      </h3>
+      <p class="text-gray-700">
+       by F. Scott Fitzgerald
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'To Kill a Mockingbird' by Harper Lee" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/zN4BE2R48kqWIBZDuXeqlMFo8XLKi7OBclxvAnlaXl979J3JA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       {{text['Тарас Бульба'][1]}}
+      </h3>
+      <p class="text-gray-700">
+       by Harper Lee
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book '1984' by George Orwell" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/nB3lB5JzjZZMKZJ0m2bLL8excAzi1k8aLYG0gWxc22sh9J3JA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       1984
+      </h3>
+      <p class="text-gray-700">
+       by George Orwell
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'Pride and Prejudice' by Jane Austen" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/Kkaet5ZOoNQqLC4HkdgMnQVtYJNwe8Twx07yz0Eczn1V8TuTA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       Pride and Prejudice
+      </h3>
+      <p class="text-gray-700">
+       by Jane Austen
+      </p>
+     </div>
+    </div>
+   </section>
+   <section class="mb-8">
+    <h2 class="text-3xl font-bold mb-4">
+     Popular
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'The Catcher in the Rye' by J.D. Salinger" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/7si22DW342rbBVBQ6CoV91ybONDAWmEU5iXCYsQpJE6DfJ3JA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       The Catcher in the Rye
+      </h3>
+      <p class="text-gray-700">
+       by J.D. Salinger
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'Moby-Dick' by Herman Melville" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/iz0Nj63wOewpaSi19tfyzwyrkyGYTcemH1Yvp5LGNifQtP5OB.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       Moby-Dick
+      </h3>
+      <p class="text-gray-700">
+       by Herman Melville
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'War and Peace' by Leo Tolstoy" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/nK1quTQetMzEYqqdUv1DDW5TSlCtJFe5UZ9xBSwBAcSZ7TuTA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       War and Peace
+      </h3>
+      <p class="text-gray-700">
+       by Leo Tolstoy
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'The Odyssey' by Homer" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/Le2JDrDHgRWqLSBwYen9GBXrsp30Ya6LwMF4QrGlgI096TuTA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       The Odyssey
+      </h3>
+      <p class="text-gray-700">
+       by Homer
+      </p>
+     </div>
+    </div>
+   </section>
+   <section class="mb-8">
+    <h2 class="text-3xl font-bold mb-4">
+     Reader's Choice
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'Crime and Punishment' by Fyodor Dostoevsky" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/eRIm7bs9LrR7fkafuBROgqG147RzJyN12fc7hRNfLjg3feJ3JA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       Crime and Punishment
+      </h3>
+      <p class="text-gray-700">
+       by Fyodor Dostoevsky
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'The Brothers Karamazov' by Fyodor Dostoevsky" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/873VjHb9cl4wLd1fJ94bdjiKqOXnnUAJon6s1VeADmNH8TuTA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       The Brothers Karamazov
+      </h3>
+      <p class="text-gray-700">
+       by Fyodor Dostoevsky
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'Brave New World' by Aldous Huxley" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/G3RPkyA1tOJ7HNZ7IAneHlCvFPqeOgfj1LKSubxhO5Yd2ncnA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       Brave New World
+      </h3>
+      <p class="text-gray-700">
+       by Aldous Huxley
+      </p>
+     </div>
+     <div class="bg-white p-4 rounded-lg shadow-md">
+      <img alt="Cover of the book 'The Hobbit' by J.R.R. Tolkien" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/D5E9ZeVaaVwNRCrWVX5q87jcqEPhk90nRLeXUxWr7LMu7TuTA.jpg" width="200"/>
+      <h3 class="text-xl font-bold">
+       The Hobbit
+      </h3>
+      <p class="text-gray-700">
+       by J.R.R. Tolkien
+      </p>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-gray-800 text-white p-4 mt-8">
+   <div class="container mx-auto text-center">
+    <p>
+     © 2024 Городская библиотека №5. Все права защищены.
+    </p>
+   </div>
+  </footer>
+ </body>
+</html>
+{% endblock %}
