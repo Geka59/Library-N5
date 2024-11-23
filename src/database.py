@@ -55,7 +55,7 @@ class Database():
         '''Возвращает название книги по ее id'''
         self.cursor.execute("SELECT name FROM library5 WHERE id = %s", [id_book])
         book_name = self.cursor.fetchone()
-        if book_name!=None:
+        if book_name != None:
             return book_name[0]
         else:
             return None
@@ -313,3 +313,22 @@ class Database():
         # search_in_table = '%' + search_text + '%'
         # self.cursor.execute("SELECT id FROM library5 WHERE annotation LIKE %s", [search_in_table])
         # #return (self.cursor.fetchall())
+
+        # Новые функции для веб ----------------------->
+
+    def get_base_info_of_books(self, list_id):
+        """Функция получения базовых сведений о книге по id
+        Используется для отображения рекомендаций на главной странице
+        формат ввода list_id - [1,2,6,7,12,2]
+        формат вывода [(2, 'Как вывести октавию на сверхвук ', ['Б.Р. Штольц']), (3, 'Замес на бульваре', ['G.H. Idby']), (7, 'Отцы и дети', ['И.С. Тургенев', 'Б.Р. Штольц']),
+        """
+        self.cursor.execute("""
+                    SELECT library5.id, library5.name, ARRAY_AGG(authors.author_name) AS author_names
+                    FROM library5
+                    JOIN books_authors ON library5.id = books_authors.book_id
+                    JOIN authors ON books_authors.author_id = authors.id
+                    WHERE library5.id = ANY(%s)
+                    GROUP BY library5.id, library5.name
+                """, (list_id,))
+
+        return (self.cursor.fetchall())

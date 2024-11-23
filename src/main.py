@@ -6,7 +6,7 @@ from app import WebApp
 def main():
     db = DatabasePostgre("postgres")
     # db.connect()
-    web_app=WebApp()
+    web_app=WebApp(db)
     web_app.app_start()
     #ui = UserInterface(db)
     #ui.ui_start()

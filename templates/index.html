@@ -1,9 +1,3 @@
-{% extends 'base.html' %}
-{% block title %}
-Главнаая страница сайтика
-{% endblock %}
-
-{% block content %}
 <html lang="en">
  <head>
   <meta charset="utf-8"/>
@@ -19,148 +13,183 @@
    body {
             font-family: 'Roboto', sans-serif;
         }
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+        }
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        .book-card {
+            min-width: 200px;
+            max-width: 200px;
+        }
   </style>
  </head>
  <body class="bg-gray-100 text-gray-900">
-
+  <header class="bg-gray-800 text-white p-6 shadow-lg">
+   <div class="container mx-auto flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+     <h1 class="text-3xl font-bold flex items-center">
+      <i class="fas fa-book-open mr-2 text-yellow-500">
+      </i>
+      Library
+     </h1>
+     <div class="relative">
+      <input class="bg-gray-700 text-white rounded-full pl-10 pr-4 py-2 focus:outline-none" placeholder="Search..." type="text"/>
+      <i class="fas fa-search absolute left-3 top-2.5 text-gray-400">
+      </i>
+     </div>
+    </div>
+    <nav class="flex items-center space-x-6 text-lg">
+     <ul class="flex space-x-6">
+      <li>
+       <a class="hover:text-yellow-500 transition duration-300" href="/">
+        Home
+       </a>
+      </li>
+      <li>
+       <a class="hover:text-yellow-500 transition duration-300" href="#">
+        Books
+       </a>
+      </li>
+      <li>
+       <a class="hover:text-yellow-500 transition duration-300" href="/about">
+        About
+       </a>
+      </li>
+      <li>
+       <a class="hover:text-yellow-500 transition duration-300" href="#">
+        Contact
+       </a>
+      </li>
+     </ul>
+     <div class="flex items-center space-x-4">
+      <i class="fas fa-user-circle text-2xl">
+      </i>
+      <button class="bg-yellow-500 text-gray-800 px-4 py-2 rounded-full hover:bg-yellow-600 transition duration-300" href="/" >
+       Login
+      </button>
+     </div>
+    </nav>
+   </div>
+  </header>
   <main class="container mx-auto p-4 bg-white">
    <section class="mb-8">
     <h2 class="text-3xl font-bold mb-4">
      Recommended
     </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'The Great Gatsby' by F. Scott Fitzgerald" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/6mbt8q8RGAJxCJU02tEMCMYJ64rPRXPn1isHU6Fq0jG5eJ3JA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       {{popular['Октавия на сверхзвуке'][0]}}
-      </h3>
-      <p class="text-gray-700">
-       by F. Scott Fitzgerald
-      </p>
+    <div class="relative">
+     <button class="absolute left-[-20px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full" onclick="scrollL('recommended')">
+      <i class="fas fa-chevron-left">
+      </i>
+     </button>
+     <div class="scroll-container space-x-6" id="recommended">
+      {% for el in recomend %}
+      <div class="bg-white p-4 rounded-lg shadow-md book-card border=3px">
+        <a href="/{{el}}" class="block">
+         {% set formatted_number = '{:04}'.format(el) %}
+         {% set image_path = 'static/img/' + formatted_number + '.png' %}
+       <img alt="Cover of the book 'The Great Gatsby' by F. Scott Fitzgerald" class="w-full h-48 object-cover mb-4 rounded" height="300" src={{image_path}} onerror="this.src='/static/img/load_err.png';" width="200"/>
+       <h3 class="text-xl font-bold">
+        {{recomend[el].book_name}}
+       </h3>
+       <p class="text-gray-700">
+        {{recomend[el].authors | join(', ') }}
+       </p>
+         </a>
+      </div>
+
+      {% endfor %}
      </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'To Kill a Mockingbird' by Harper Lee" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/zN4BE2R48kqWIBZDuXeqlMFo8XLKi7OBclxvAnlaXl979J3JA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       {{text['Тарас Бульба'][1]}}
-      </h3>
-      <p class="text-gray-700">
-       by Harper Lee
-      </p>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book '1984' by George Orwell" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/nB3lB5JzjZZMKZJ0m2bLL8excAzi1k8aLYG0gWxc22sh9J3JA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       1984
-      </h3>
-      <p class="text-gray-700">
-       by George Orwell
-      </p>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'Pride and Prejudice' by Jane Austen" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/Kkaet5ZOoNQqLC4HkdgMnQVtYJNwe8Twx07yz0Eczn1V8TuTA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       Pride and Prejudice
-      </h3>
-      <p class="text-gray-700">
-       by Jane Austen
-      </p>
-     </div>
+     <button class="absolute right-[-20px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full" onclick="scrollR('recommended')">
+      <i class="fas fa-chevron-right">
+      </i>
+     </button>
     </div>
    </section>
    <section class="mb-8">
     <h2 class="text-3xl font-bold mb-4">
      Popular
     </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'The Catcher in the Rye' by J.D. Salinger" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/7si22DW342rbBVBQ6CoV91ybONDAWmEU5iXCYsQpJE6DfJ3JA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       The Catcher in the Rye
-      </h3>
-      <p class="text-gray-700">
-       by J.D. Salinger
-      </p>
+    <div class="relative">
+     <button class="absolute left-[-20px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full" onclick="scrollL('popular')">
+      <i class="fas fa-chevron-left">
+      </i>
+     </button>
+     <div class="scroll-container space-x-6" id="popular">
+      {% for el in popular %}
+      <div class="bg-white p-4 rounded-lg shadow-md book-card border=3px">
+        <a href="/{{el}}" class="block">
+         {% set formatted_number = '{:04}'.format(el) %}
+         {% set image_path = 'static/img/' + formatted_number + '.png' %}
+       <img alt="Cover of the book 'The Great Gatsby' by F. Scott Fitzgerald" class="w-full h-48 object-cover mb-4 rounded" height="300" src={{image_path}} onerror="this.src='/static/img/load_err.png';" width="200"/>
+       <h3 class="text-xl font-bold">
+        {{popular[el].book_name}}
+       </h3>
+       <p class="text-gray-700">
+        {{popular[el].authors | join(', ') }}
+       </p>
+         </a>
+      </div>
+
+      {% endfor %}
      </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'Moby-Dick' by Herman Melville" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/iz0Nj63wOewpaSi19tfyzwyrkyGYTcemH1Yvp5LGNifQtP5OB.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       Moby-Dick
-      </h3>
-      <p class="text-gray-700">
-       by Herman Melville
-      </p>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'War and Peace' by Leo Tolstoy" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/nK1quTQetMzEYqqdUv1DDW5TSlCtJFe5UZ9xBSwBAcSZ7TuTA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       War and Peace
-      </h3>
-      <p class="text-gray-700">
-       by Leo Tolstoy
-      </p>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'The Odyssey' by Homer" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/Le2JDrDHgRWqLSBwYen9GBXrsp30Ya6LwMF4QrGlgI096TuTA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       The Odyssey
-      </h3>
-      <p class="text-gray-700">
-       by Homer
-      </p>
-     </div>
+     <button class="absolute right-[-20px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full" onclick="scrollR('popular')">
+      <i class="fas fa-chevron-right">
+      </i>
+     </button>
     </div>
    </section>
    <section class="mb-8">
     <h2 class="text-3xl font-bold mb-4">
      Reader's Choice
     </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'Crime and Punishment' by Fyodor Dostoevsky" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/eRIm7bs9LrR7fkafuBROgqG147RzJyN12fc7hRNfLjg3feJ3JA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       Crime and Punishment
-      </h3>
-      <p class="text-gray-700">
-       by Fyodor Dostoevsky
-      </p>
+    <div class="relative">
+     <button class="absolute left-[-20px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full" onclick="scrollL('readers-choice')">
+      <i class="fas fa-chevron-left">
+      </i>
+     </button>
+     <div class="scroll-container space-x-6" id="readers-choice">
+      {% for el in readers_choise %}
+      <div class="bg-white p-4 rounded-lg shadow-md book-card border=3px">
+        <a href="/{{el}}" class="block">
+         {% set formatted_number = '{:04}'.format(el) %}
+         {% set image_path = 'static/img/' + formatted_number + '.png' %}
+       <img alt="Cover of the book 'The Great Gatsby' by F. Scott Fitzgerald" class="w-full h-48 object-cover mb-4 rounded" height="300" src={{image_path}} onerror="this.src='/static/img/load_err.png';" width="200"/>
+       <h3 class="text-xl font-bold">
+        {{readers_choise[el].book_name}}
+       </h3>
+       <p class="text-gray-700">
+        {{readers_choise[el].authors | join(', ') }}
+       </p>
+         </a>
+      </div>
+
+      {% endfor %}
      </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'The Brothers Karamazov' by Fyodor Dostoevsky" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/873VjHb9cl4wLd1fJ94bdjiKqOXnnUAJon6s1VeADmNH8TuTA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       The Brothers Karamazov
-      </h3>
-      <p class="text-gray-700">
-       by Fyodor Dostoevsky
-      </p>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'Brave New World' by Aldous Huxley" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/G3RPkyA1tOJ7HNZ7IAneHlCvFPqeOgfj1LKSubxhO5Yd2ncnA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       Brave New World
-      </h3>
-      <p class="text-gray-700">
-       by Aldous Huxley
-      </p>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow-md">
-      <img alt="Cover of the book 'The Hobbit' by J.R.R. Tolkien" class="w-full h-48 object-cover mb-4 rounded" height="300" src="https://storage.googleapis.com/a1aa/image/D5E9ZeVaaVwNRCrWVX5q87jcqEPhk90nRLeXUxWr7LMu7TuTA.jpg" width="200"/>
-      <h3 class="text-xl font-bold">
-       The Hobbit
-      </h3>
-      <p class="text-gray-700">
-       by J.R.R. Tolkien
-      </p>
-     </div>
+     <button class="absolute right-[-20px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full" onclick="scrollR('readers-choice')">
+      <i class="fas fa-chevron-right">
+      </i>
+     </button>
     </div>
    </section>
   </main>
   <footer class="bg-gray-800 text-white p-4 mt-8">
    <div class="container mx-auto text-center">
     <p>
-     © 2024 Городская библиотека №5. Все права защищены.
+     © 2023 Library. All rights reserved.
     </p>
    </div>
   </footer>
+  <script>
+   function scrollR(id) {
+        document.getElementById(id).scrollBy({ left: 800, behavior: 'smooth' });
+    }
+    function scrollL(id) {
+        document.getElementById(id).scrollBy({ left: -800, behavior: 'smooth' });
+    }
+  </script>
  </body>
 </html>
-{% endblock %}
